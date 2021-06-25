@@ -22,7 +22,7 @@ ownerName: ""
 
 global:
   # Default hub for MSM images.
-  hub: docker.io/ciscolab
+  hub: docker.io/ciscolabs
 
   # Default tag for MSM images.
   tag: latest
