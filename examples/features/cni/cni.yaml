@@ -1,10 +1,75 @@
+---
+# Source: msm-cni/templates/service_account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: msm-cni
+  namespace: default
+  labels:
+    app: msm-cni
+---
+# Source: msm-cni/templates/configmap.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: msm-cni-config
+  namespace: default
+  labels:
+    app: msm-cni
+data:
+  # The CNI network configuration to chain with an existing CNI plugin on each node.
+  cni_network_config: |-
+    {
+      "cniVersion": "0.3.1",
+      "name": "msm-cni",
+      "type": "msm-cni",
+      "logLevel": "error",
+      "kubernetes": {
+          "kubeConfig": "__KUBECONFIG_FILEPATH__",
+          "cniBinDir": "/opt/cni/bin",
+          "excludeNamespaces": [ "msm-system", "wcm-system" ]
+      }
+    }
+---
+# Source: msm-cni/templates/cluster_role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: msm-cni
+  labels:
+    app: msm-cni
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+      - nodes
+    verbs:
+      - get
+---
+# Source: msm-cni/templates/cluster_role_binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: msm-cni
+  labels:
+    app: msm-cni
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: msm-cni
+subjects:
+  - kind: ServiceAccount
+    name: msm-cni
+    namespace: default
+---
+# Source: msm-cni/templates/daemonset.yaml
 # This manifest installs the MSM install-cni container, resulting on a chained MSM CNI plugin and config
 # on all nodes of a Kubernetes cluster
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: msm-cni
-  namespace: {{ .Release.Namespace }}
+  namespace: default
   labels:
     app: msm-cni
 spec:
@@ -47,14 +112,8 @@ spec:
         # This container installs the MSM CNI binaries
         # and CNI network config file on each node.
         - name: installer
-          {{- if contains "/" .Values.cni.image }}
-          image: "{{ .Values.cni.image }}"
-          {{- else }}
-          image: "{{ .Values.cni.hub | default .Values.global.hub }}/{{ .Values.cni.image | default "msm-cni" }}:{{ .Values.cni.tag | default .Values.global.tag }}"
-          {{- end }}
-          {{- if or .Values.cni.pullPolicy .Values.global.imagePullPolicy }}
-          imagePullPolicy: {{ .Values.cni.pullPolicy | default .Values.global.imagePullPolicy }}
-          {{- end }}
+          image: "docker.io/ciscolabs/msm-cni:latest"
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
               path: /healthz
@@ -66,11 +125,6 @@ spec:
               port: 8000
           command: ["installer"]
           env:
-            {{- if .Values.cni.cniConfFileName }}
-            # Name of the CNI config file to create.
-            - name: CNI_CONF_NAME
-              value: "{{ .Values.cni.cniConfFileName }}"
-            {{- end }}
             # The CNI network config to install on each node.
             - name: CNI_NETWORK_CONFIG
               valueFrom:
@@ -78,10 +132,10 @@ spec:
                   name: msm-cni-config
                   key: cni_network_config
             - name: CNI_NET_DIR
-              value: {{ default "/etc/cni/net.d" .Values.cni.cniConfDir }}
+              value: /etc/cni/net.d
             # Deploy as a standalone CNI plugin or as chained?
             - name: CHAINED_CNI_PLUGIN
-              value: "{{ .Values.cni.chained }}"
+              value: "true"
           volumeMounts:
             - mountPath: /host/opt/cni/bin
               name: cni-bin-dir
@@ -91,7 +145,7 @@ spec:
         # Used to install CNI.
         - name: cni-bin-dir
           hostPath:
-            path: {{ default "/opt/cni/bin" .Values.cni.cniBinDir }}
+            path: /opt/cni/bin
         - name: cni-net-dir
           hostPath:
-            path: {{ default "/etc/cni/net.d" .Values.cni.cniConfDir }}
+            path: /etc/cni/net.d

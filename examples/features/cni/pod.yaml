@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-example
+  labels:
+    app: web
+  annotations:
+    sidecar.mediastreamingmesh.io/inject: "true"
+spec:
+  containers:
+    - name: front-end
+      image: nginx
+      ports:
+        - containerPort: 80
