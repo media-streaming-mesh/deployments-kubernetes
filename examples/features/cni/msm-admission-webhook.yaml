@@ -69,11 +69,11 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: REPO
-              value: "ciscolabs"
+              value: "gilesheron"
             - name: TAG
               value: "latest"
             - name: MSM_SIDECAR
-              value: "ubuntu-wait"
+              value: "rtsp-sidecar-proxy"
             - name: IMAGE_PULL_POLICY
               value: IfNotPresent
             - name: "LOG_LVL"
