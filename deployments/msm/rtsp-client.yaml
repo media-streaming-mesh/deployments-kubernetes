@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rtsp-client
+  labels:
+    rtsp: client
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      rtsp: client
+  template:
+    metadata:
+      labels:
+        rtsp: client
+      annotations:
+        sidecar.mediastreamingmesh.io/inject: "true"
+    spec:
+      containers:
+        - name: rtsp-client
+          image: ciscolabs/rtsp-client:latest
+          imagePullPolicy: IfNotPresent

@@ -1,70 +1,3 @@
----
-# Source: msm-cni/templates/service_account.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: msm-cni
-  namespace: default
-  labels:
-    app: msm-cni
----
-# Source: msm-cni/templates/configmap.yaml
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: msm-cni-config
-  namespace: default
-  labels:
-    app: msm-cni
-data:
-  # The CNI network configuration to chain with an existing CNI plugin on each node.
-  cni_network_config: |-
-    {
-      "cniVersion": "0.3.1",
-      "name": "msm-cni",
-      "type": "msm-cni",
-      "logLevel": "error",
-      "kubernetes": {
-          "kubeConfig": "__KUBECONFIG_FILEPATH__",
-          "cniBinDir": "/opt/cni/bin",
-          "excludeNamespaces": [ "msm-system", "wcm-system" ]
-      }
-    }
----
-# Source: msm-cni/templates/cluster_role.yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: msm-cni
-  labels:
-    app: msm-cni
-rules:
-  - apiGroups: [""]
-    resources:
-      - pods
-      - nodes
-    verbs:
-      - get
----
-# Source: msm-cni/templates/cluster_role_binding.yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: msm-cni
-  labels:
-    app: msm-cni
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: msm-cni
-subjects:
-  - kind: ServiceAccount
-    name: msm-cni
-    namespace: default
----
-# Source: msm-cni/templates/daemonset.yaml
-# This manifest installs the MSM install-cni container, resulting on a chained MSM CNI plugin and config
-# on all nodes of a Kubernetes cluster
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
@@ -112,7 +45,7 @@ spec:
         # This container installs the MSM CNI binaries
         # and CNI network config file on each node.
         - name: installer
-          image: "docker.io/ciscolabs/msm-cni:latest"
+          image: ciscolabs/msm-cni:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:

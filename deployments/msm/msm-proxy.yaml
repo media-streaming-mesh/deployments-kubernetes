@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: msm-proxy
+  labels:
+    msm: proxy
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      msm: proxy
+  template:
+    metadata:
+      labels:
+        msm: proxy
+    spec:
+      hostNetwork: true
+      containers:
+        - name: msm-proxy
+          image: ciscolabs/msm-proxy:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: grpc
+              protocol: TCP
+              containerPort: 9000
