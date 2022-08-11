@@ -32,6 +32,9 @@ spec:
         - key: node-role.kubernetes.io/master
           operator: Exists
           effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       serviceAccount: msm-admission-webhook-sa
       containers:
         - name: msm-admission-webhook
@@ -45,7 +48,8 @@ spec:
             - name: MSM_SIDECAR
               value: "msm-rtsp-stub"
             - name: IMAGE_PULL_POLICY
-              value: IfNotPresent
+              value: Always 
             - name: "LOG_LVL"
               value: "DEBUG"
-
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""

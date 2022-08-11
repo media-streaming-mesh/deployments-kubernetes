@@ -1,0 +1,14 @@
+kubectl apply -f webhook-prep.yaml
+kubectl apply -f cni-prep.yaml
+kubectl apply -f cni.yaml
+kubectl apply -f webhook.yaml
+sleep 5
+kubectl apply -f msm-proxy.yaml
+kubectl apply -f msm-proxy-srv.yaml
+sleep 5
+kubectl apply -f msm-controller.yaml
+kubectl apply -f msm-controller-svc.yaml
+sleep 5
+kubectl apply -f rtsp-server.yaml
+kubectl apply -f rtsp-svc.yaml
+kubectl apply -f rtsp-client.yaml
