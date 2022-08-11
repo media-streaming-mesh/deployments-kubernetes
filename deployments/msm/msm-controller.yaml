@@ -28,6 +28,13 @@ spec:
       labels:
         msm: controller
     spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       containers:
         - name: msm-controller
           image: ciscolabs/msm-controller:latest
@@ -36,3 +43,5 @@ spec:
             - name: grpc
               protocol: TCP
               containerPort: 9000
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
