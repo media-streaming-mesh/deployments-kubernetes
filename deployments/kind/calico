@@ -1,0 +1,6 @@
+kind load docker-image calico/cni:v3.21.4
+kind load docker-image calico/cni:v3.21.4
+kind load docker-image calico/pod2daemon-flexvol:v3.21.4
+kind load docker-image calico/node:v3.21.4
+kind load docker-image calico/kube-controllers:v3.21.4
+kubectl apply -f https://projectcalico.docs.tigera.io/manifests/calico.yaml
