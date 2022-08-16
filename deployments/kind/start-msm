@@ -1,5 +1,5 @@
 kind create cluster --config kind-calico.yaml
 kubectl cluster-info --context kind-kind
 ./calico
-./kind
+./msm
 kubectl get pods -A
