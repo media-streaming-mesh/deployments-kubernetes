@@ -30,6 +30,15 @@ spec:
         app: msm-admission-webhook
     spec:
       serviceAccount: msm-admission-webhook-sa
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
       containers:
         - name: msm-admission-webhook
           image: ciscolabs/msm-admission-webhook:sidecar
