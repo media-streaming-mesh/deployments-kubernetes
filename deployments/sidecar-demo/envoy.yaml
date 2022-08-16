@@ -1,0 +1,76 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: envoy-cfg
+  namespace: default
+data:
+  envoy-config.yaml: |
+    static_resources:
+      listeners:
+        - name: listener_0
+          address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 8854
+          filter_chains:
+            - filters:
+                - name: envoy.filters.network.tcp_proxy
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy
+                    stat_prefix: destination
+                    cluster: cluster_0
+      clusters:
+        - name: cluster_0
+          connect_timeout: 30s
+          type: LOGICAL_DNS
+          load_assignment:
+            cluster_name: cluster_0
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: camerae.default.svc.cluster.local
+                          port_value: 8854
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: envoy
+  labels:
+    k8s-app: envoy
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      name: envoy
+  template:
+    metadata:
+      labels:
+        name: envoy
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      containers:
+        - name: envoy
+          image: envoyproxy/envoy:v1.18.4
+          imagePullPolicy: IfNotPresent
+          args: ["-c /tmp/envoy-config.yaml"]
+          ports:
+            - name: rtsp
+              protocol: TCP
+              containerPort: 8854
+              hostPort: 8854
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+          volumeMounts:
+            - name: envoy-config
+              mountPath: /tmp
+      volumes:
+        - name: envoy-config
+          configMap:
+            name: envoy-cfg

@@ -1,0 +1,13 @@
+kubectl apply -f msm-prep.yaml
+kubectl apply -f cni-prep.yaml
+kubectl apply -f cni.yaml
+sleep 5
+kubectl apply -f msm-admission-webhook.yaml
+sleep 5
+kubectl apply -f k8s-api.yaml
+kubectl apply -f camera.yaml
+sleep 5
+kubectl apply -f gateways.yaml
+kubectl apply -f gateway2.yaml
+kubectl apply -f envoy.yaml
+kubectl apply -f simple-server.yaml

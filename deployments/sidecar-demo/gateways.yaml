@@ -1,0 +1,67 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: proxy-cfg
+  namespace: default
+data:
+  conf.yml: |
+    readTimeout: 5s
+    writeTimeout: 5s
+    server:
+      protocols: [ tcp, udp ]
+      rtspPort: 8554
+      rtpPort: 8050
+      rtcpPort: 8051
+      readUser:
+      readPass:
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: gateways
+  labels:
+    k8s-app: gateways
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: gateways
+  template:
+    metadata:
+      labels:
+        app: gateways
+
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      containers:
+        - name: proxy
+          image: gilesheron/rtsp-sidecar-proxy:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: rtsp
+              protocol: TCP
+              containerPort: 8554
+              hostPort: 8554
+            - name: rtp
+              protocol: UDP
+              containerPort: 8050
+              hostPort: 8050
+            - name: rtcp
+              protocol: UDP
+              containerPort: 8051
+              hostPort: 8051
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+          volumeMounts:
+            - name: proxy-config
+              mountPath: /tmp
+      volumes:
+        - name: proxy-config
+          configMap:
+            name: msm-proxy-cfg

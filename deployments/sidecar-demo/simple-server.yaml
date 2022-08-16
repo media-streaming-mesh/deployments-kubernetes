@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-server
+  labels:
+    app: api-server
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-server
+  template:
+    metadata:
+      labels:
+        app: api-server
+    spec:
+      hostNetwork: true
+      containers:
+        - name: server
+          image: brecode/simple-server:latest
+          imagePullPolicy: IfNotPresent
+          command: [ "/build/simple-server" ]
+          args: [ "-bindAddr", "0.0.0.0", "-bindPort", "8080", "-intfc", "eth0" ]
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 8080
+          securityContext:
+            privileged: true

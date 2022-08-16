@@ -1,0 +1,9 @@
+docker pull ciscolabs/msm-admission-webhook:sidecar
+docker pull ciscolabs/msm-cni:latest
+docker pull gilesheron/rtsp-sidecar-proxy:latest
+docker pull gilesheron/rtsp-sidecar-proxy:replicate
+docker pull gilesheron/rtsp-simple-server:latest
+docker pull gilesheron/ffmpeg-image:latest
+docker pull gilesheron/k8s-apiclient:latest
+docker pull brecode/simple-server:latest
+docker pull envoyproxy/envoy:v1.18.4

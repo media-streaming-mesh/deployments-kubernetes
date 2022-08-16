@@ -1,0 +1,54 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fabric8-rbac
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: k8s-apiclient-service
+spec:
+  selector:
+    app: k8s-apiclient
+  ports:
+    - protocol: TCP
+      port: 9899
+      targetPort: 9898
+
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-apiclient-deployment
+spec:
+  selector:
+    matchLabels:
+      app: k8s-apiclient
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: k8s-apiclient
+
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      containers:
+        - name: k8s-apiclient
+          image: gilesheron/k8s-apiclient:latest
+          imagePullPolicy: IfNotPresent

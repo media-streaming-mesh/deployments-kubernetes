@@ -32,3 +32,21 @@ roleRef:
   kind: ClusterRole
   name: msm-admission-webhook-role
   apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: msm-proxy-cfg
+  namespace: default
+data:
+  conf.yml: |
+    readTimeout: 5s
+    writeTimeout: 5s
+    server:
+      protocols: [ tcp, udp ]
+      rtspPort: 8554
+      rtpPort: 8050
+      rtcpPort: 8051
+      readUser:
+      readPass:

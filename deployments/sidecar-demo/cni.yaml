@@ -1,0 +1,87 @@
+# Source: msm-cni/templates/daemonset.yaml
+# This manifest installs the MSM install-cni container, resulting on a chained MSM CNI plugin and config
+# on all nodes of a Kubernetes cluster
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: msm-cni
+  namespace: default
+  labels:
+    app: msm-cni
+spec:
+  selector:
+    matchLabels:
+      app: msm-cni
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: msm-cni
+      annotations:
+        # This, along with the CriticalAddonsOnly toleration below,
+        # marks the pod as a critical add-on, ensuring it gets
+        # priority scheduling and that its resources are reserved
+        # if it ever gets evicted.
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      hostNetwork: true
+      tolerations:
+        # Make sure msm-cni gets scheduled on all nodes.
+        - effect: NoSchedule
+          operator: Exists
+        # Mark the pod as a critical add-on for rescheduling.
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - effect: NoExecute
+          operator: Exists
+      priorityClassName: system-node-critical
+      serviceAccountName: msm-cni
+      # Minimize downtime during a rolling upgrade or deletion; tell Kubernetes to do a "force
+      # deletion": https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods.
+      terminationGracePeriodSeconds: 5
+      containers:
+        # This container installs the MSM CNI binaries
+        # and CNI network config file on each node.
+        - name: installer
+          image: ciscolabs/msm-cni:latest
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+          command: ["installer"]
+          env:
+            # The CNI network config to install on each node.
+            - name: CNI_NETWORK_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: msm-cni-config
+                  key: cni_network_config
+            - name: CNI_NET_DIR
+              value: /etc/cni/net.d
+            # Deploy as a standalone CNI plugin or as chained?
+            - name: CHAINED_CNI_PLUGIN
+              value: "true"
+          volumeMounts:
+            - mountPath: /host/opt/cni/bin
+              name: cni-bin-dir
+            - mountPath: /host/etc/cni/net.d
+              name: cni-net-dir
+      volumes:
+        # Used to install CNI.
+        - name: cni-bin-dir
+          hostPath:
+            path: /opt/cni/bin
+        - name: cni-net-dir
+          hostPath:
+            path: /etc/cni/net.d
