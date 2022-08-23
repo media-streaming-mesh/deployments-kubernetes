@@ -1,4 +1,4 @@
-docker pull ciscolabs/msm-admission-webhook:kind
+docker pull ciscolabs/msm-admission-webhook:latest
 docker pull ciscolabs/msm-cni:latest
 docker pull ciscolabs/msm-controller:latest
 docker pull ciscolabs/msm-proxy:latest
