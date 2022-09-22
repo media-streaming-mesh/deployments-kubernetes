@@ -3,8 +3,7 @@ kubectl apply -f cni-prep.yaml
 kubectl apply -f cni.yaml
 kubectl apply -f webhook.yaml
 sleep 5
-kubectl apply -f msm-proxy.yaml
-kubectl apply -f msm-proxy-srv.yaml
+kubectl apply -f msm-gateway.yaml
 sleep 5
 kubectl apply -f msm-controller.yaml
 kubectl apply -f msm-controller-svc.yaml

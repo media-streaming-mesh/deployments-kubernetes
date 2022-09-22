@@ -48,7 +48,7 @@ spec:
             - name: MSM_SIDECAR
               value: "msm-rtsp-stub"
             - name: IMAGE_PULL_POLICY
-              value: "IfNotPresent" 
+              value: "IfNotPresent"
             - name: LOG_LVL
               value: "DEBUG"
             - name: MSM_LOG_LVL

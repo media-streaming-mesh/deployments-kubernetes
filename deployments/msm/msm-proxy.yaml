@@ -16,23 +16,16 @@ spec:
     spec:
       hostNetwork: true
       containers:
-        - name: msm-cp-stub
-          image: ciscolabs/msm-cp-stub:latest
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: rtsp
-              protocol: TCP
-              containerPort: 8554t 
         - name: msm-proxy
           image: ciscolabs/msm-proxy:latest
-          imagePullPolicy: IfNotPresent 
+          imagePullPolicy: IfNotPresent
           ports:
             - name: rtp
               protocol: UDP
               containerPort: 8050
             - name: rtcp
               protocol: UDP
-              containerPort:8051
+              containerPort: 8051
             - name: grpc
               protocol: TCP
               containerPort: 9000
