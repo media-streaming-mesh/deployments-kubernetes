@@ -54,7 +54,7 @@ spec:
             - name: MSM_LOG_LVL
               value: "TRACE"
             - name: MSM_DATA_PLANE
-              value: "172.18.0.2"
+              value: "192.168.82.0"
             - name: MSM_CONTROL_PLANE
               value: "http://10.96.3.1:9000"   
       nodeSelector:

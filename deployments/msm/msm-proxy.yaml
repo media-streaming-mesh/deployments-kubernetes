@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: msm-gateway
+  name: msm-proxy
   labels:
-    msm: gateway 
+    msm: proxy 
   namespace: default
 spec:
   selector:
     matchLabels:
-      msm: gateway 
+      msm: proxy 
   template:
     metadata:
       labels:
-        msm: gateway 
+        msm: proxy 
     spec:
       hostNetwork: true
       containers:
@@ -29,17 +29,3 @@ spec:
             - name: grpc
               protocol: TCP
               containerPort: 9000
-        - name: msm-rtsp-stub
-          image: ciscolabs/msm-rtsp-stub:latest
-          imagePullPolicy: IfNotPresent 
-          ports:
-            - name: rtsp
-              protocol: TCP
-              containerPort: 8554
-          env:
-            - name: MSM_LOG_LVL
-              value: "TRACE"
-            - name: MSM_DATA_PLANE
-              value: "172.18.0.2"
-            - name: MSM_CONTROL_PLANE
-              value: "http://10.96.3.1:9000"

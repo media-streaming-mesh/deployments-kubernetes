@@ -5,4 +5,4 @@ kubectl apply -f webhook.yaml
 kubectl apply -f msm-controller.yaml
 kubectl apply -f msm-controller-svc.yaml
 sleep 5
-kubectl apply -f msm-gateway.yaml
+kubectl apply -f msm-proxy.yaml

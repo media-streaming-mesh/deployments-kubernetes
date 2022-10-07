@@ -1,7 +1,7 @@
 docker pull ciscolabs/msm-admission-webhook:latest
 docker pull ciscolabs/msm-cni:latest
-docker pull ciscolabs/msm-controller:latest
-docker pull ciscolabs/msm-proxy:latest
+docker pull ciscolabs/msm-controller:dev
+docker pull ciscolabs/msm-proxy:dev
 docker pull ciscolabs/msm-rtsp-stub:latest
 docker pull ciscolabs/rtsp-server:latest
 docker pull ciscolabs/rtsp-client:latest

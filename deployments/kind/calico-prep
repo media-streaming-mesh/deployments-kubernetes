@@ -1,5 +1,5 @@
-docker pull calico/cni:v3.21.4
-docker pull calico/cni:v3.21.4
-docker pull calico/pod2daemon-flexvol:v3.21.4
-docker pull calico/node:v3.21.4
-docker pull calico/kube-controllers:v3.21.4
+docker pull calico/cni:v3.24.1
+docker pull calico/cni:v3.24.1
+docker pull calico/pod2daemon-flexvol:v3.24.1
+docker pull calico/node:v3.24.1
+docker pull calico/kube-controllers:v3.24.1
