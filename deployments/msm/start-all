@@ -1,0 +1,3 @@
+./start-msm
+sleep 5
+./start-rtsp
