@@ -14,11 +14,12 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
         --mount=type=cache,target=/go/pkg \
         GOOS=$TARGETOS GOARCH=$TARGETARCH go build -a -o rtsp-simple-server main.go
 
-FROM ciscolabs/rtsp-client:dev
+FROM ciscolabs/rtsp-client:latest
 
 COPY rtsp-simple-server.yml /
 COPY --from=builder /workspace/rtsp-simple-server /
-COPY testsrc.mp4 /
+COPY sample.mp4 /
+COPY start /
 
 ENTRYPOINT ["/rtsp-simple-server"]
 

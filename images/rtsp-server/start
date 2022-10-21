@@ -1,0 +1,1 @@
+ffmpeg -re -stream_loop -100 -i sample.mp4 -c copy -f rtsp rtsp://0.0.0.0:554/mystream
