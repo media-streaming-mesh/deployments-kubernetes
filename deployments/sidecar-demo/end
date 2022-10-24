@@ -4,5 +4,5 @@ kubectl delete -f gateways.yaml
 kubectl delete -f gateway2.yaml
 kubectl delete -f envoy.yaml
 kubectl delete -f k8s-api.yaml
-kubectl delete -f msm-admission-webhook.yaml
+kubectl delete -f webhook.yaml
 kubectl delete -f cni.yaml

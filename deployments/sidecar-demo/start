@@ -2,7 +2,7 @@ kubectl apply -f msm-prep.yaml
 kubectl apply -f cni-prep.yaml
 kubectl apply -f cni.yaml
 sleep 5
-kubectl apply -f msm-admission-webhook.yaml
+kubectl apply -f webhook.yaml
 sleep 5
 kubectl apply -f k8s-api.yaml
 kubectl apply -f camera.yaml
