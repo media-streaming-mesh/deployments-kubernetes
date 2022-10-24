@@ -11,13 +11,5 @@ spec:
       port: 554
       targetPort: 554
       protocol: TCP
-    - name: rtp
-      port: 8000
-      targetPort: 8000
-      protocol: UDP
-    - name: rtcp
-      port: 8001
-      targetPort: 8001
-      protocol: UDP
   selector:
     app: rtsp
