@@ -29,6 +29,9 @@ spec:
             - name: grpc
               protocol: TCP
               containerPort: 9000
+          env:
+            - name: LOG_LVL
+              value: "DEBUG"
         - name: msm-rtsp-stub
           image: ciscolabs/msm-rtsp-stub:latest
           imagePullPolicy: IfNotPresent 
