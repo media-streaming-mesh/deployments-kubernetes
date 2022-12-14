@@ -20,3 +20,15 @@ spec:
         - name: rtsp-server
           image: ciscolabs/rtsp-server:latest
           imagePullPolicy: IfNotPresent
+        - name: rtsp-client
+          image: ciscolabs/rtsp-client:latest
+          imagePullPolicy: IfNotPresent
+          command: ["ffmpeg"]
+          args: ["-re", "-stream_loop", "-100", "-i", "/tmp/video.mjpeg", "-input_format", "mjpeg", "-pix_fmt", "yuvj420p", "-vcodec", "mjpeg", "-huffman", "default", "-f", "rtsp", "rtsp://0.0.0.0:554/mystream"]
+          volumeMounts:
+            - mountPath: /tmp
+              name: movies
+      volumes:
+        - name: movies
+          hostPath:
+            path: /tmp
