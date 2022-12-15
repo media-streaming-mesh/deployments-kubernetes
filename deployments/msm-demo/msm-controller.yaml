@@ -43,5 +43,8 @@ spec:
             - name: grpc
               protocol: TCP
               containerPort: 9000
+          env:
+            - name: LOG_LVL
+              value: "TRACE"
       nodeSelector:
         node-role.kubernetes.io/control-plane: ""
