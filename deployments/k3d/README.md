@@ -1,79 +1,79 @@
 # MSM K3D Setup
 
-- Install K3D https://k3d.io/v5.4.6/#installation 
-     
-     curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+## Install K3D 
 
-     or
+Follow the instructions on official docs https://k3d.io/v5.4.6/#installation 
 
-     (For Mac users "brew install k3d")
+or
+	
+```curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash```
+
+or
+	
+Mac users ```brew install k3d```
 
 
-     What is k3d?
+## What is k3d?
 		
-			k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal Kubernetes distribution) in docker.
+	k3d is a lightweight wrapper to run k3s (Rancher Lab’s minimal Kubernetes distribution) in docker.
 
-			k3d makes it very easy to create single- and multi-node k3s clusters in docker, e.g. for local development on Kubernetes.
+	k3d makes it very easy to create single- and multi-node k3s clusters in docker, e.g. for local development on Kubernetes.
 
 
-- Create a cluster 
+## Create a cluster 
 
-    k3d cluster create NAME [flags]
+> k3d cluster create NAME [flags]
 
-    	example for MSM with 2 Nodes and 1 Server: "k3d cluster create msm --agents 2 --servers 1"
+example for MSM with 2 Nodes and 1 Server: ```k3d cluster create msm --agents 2 --servers 1```
 
-    Test/Use the new Cluster
+Test/Use the new Cluster
 
-    	"kubectl cluster-info"
-    	"kubectl get nodes"
+```kubectl cluster-info```
 
-- Copy Test Video to Docker Container (/tmp/ folder)
+```kubectl get nodes```
 
-	"docker cp {options} CONTAINER_ID:SRC_PATH DEST_PATH "
+## Copy Test Video to Docker Container (/tmp/ folder)
 
-	example: "docker cp video.mpeg CONTAINER_ID:/tmp/"
+```docker cp {options} CONTAINER_ID:SRC_PATH DEST_PATH ```
 
-	to get container Id "docker ps -a"
+example: ```docker cp video.mpeg CONTAINER_ID:/tmp/```
 
-- Start MSM
+## Start MSM
 
-	Use Deployment-Kubernetes Repo for that. Follow the README in msm-demo folder, it has "./start-all" script.
+Clone Deployment-Kubernetes Repo ```git clone git@github.com:media-streaming-mesh/deployments-kubernetes.git```. Follow the README in msm-demo folder, folder also contains "./start-all" script.
 
-	Note: may need to change the Cluster IPs from "10.96" to "10.43" of "msm-controller-scv.yaml", "msm-gateway.yaml", "rtsp-svc.yaml", "webhook.yaml"
+**Note:** may need to change the Cluster IPs from "10.96" to "10.43" of "msm-controller-scv.yaml", "msm-gateway.yaml", "rtsp-svc.yaml", "webhook.yaml"
+and may also need to change the nodeSelector from "" to "true" in "msm-controller.yaml" and "webhook.yaml"
 
-	also change nodeSelector from "" to "true" in "msm-controller.yaml" and "webhook.yaml"
+example:
 
-	From: 
+ From: 
 
-		nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
+``` nodeSelector: node-role.kubernetes.io/control-plane: ""```
 
-    To:
+To:
 
-    	nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
+```nodeSelector: node-role.kubernetes.io/control-plane: "true"```
 
-- Testing Internal Client(s)
+## Testing Internal Client(s)
 
-	Bash into Client Pod
+Bash into Client Pod
 
-	"kubectl exec -it 'CLIENT_POD_NAME' --  bash"
+```kubectl exec -it 'CLIENT_POD_NAME' --  bash```
 
-	Start Streamimg
+Start Streamimg
 
-	"ffmpeg -i rtsp://IP_OF_SERVER_POD:554/mystream -c copy output.mp4"
+```ffmpeg -i rtsp://IP_OF_SERVER_POD:554/mystream -c copy output.mp4```
 
-- Testing External Client(s)
+## Testing External Client(s)
 
-	RUN port forwarding to test outside kubernetes/k3d cluster
+RUN port forwarding to test outside kubernetes/k3d cluster
 
-	"kubectl get service"
+```kubectl port-forward service/mystream 8080:554```
 
-	"kubectl port-forward service/SERVICE_NAME 8080:554"
+Open VLC
 
-	Open VLC
+Open Network source
 
-	Open Network source
-
-	"rtsp://IP_OF_MSM_GATEWAY_POD:8554/mystream"
+```rtsp://IP_OF_MSM_GATEWAY_POD:8554/mystream```
 
