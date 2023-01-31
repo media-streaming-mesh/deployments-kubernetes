@@ -13,8 +13,4 @@ For rtsp-server do:
 
 For rtsp-client do:
 
-`ffmpeg -rtsp_transport tcp -i rtsp://10.96.10.1:554/mystream -c copy output.mp4`
-
-
-
-
+`ffmpeg -rtsp_transport tcp -i rtsp://10.43.10.1:554/mystream -c copy output.mp4`

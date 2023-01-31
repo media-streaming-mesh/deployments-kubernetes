@@ -47,4 +47,4 @@ spec:
             - name: LOG_LVL
               value: "TRACE"
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
+        node-role.kubernetes.io/control-plane: "true"

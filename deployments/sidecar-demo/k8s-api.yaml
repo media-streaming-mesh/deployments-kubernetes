@@ -50,7 +50,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
+        node-role.kubernetes.io/control-plane: "true"
       containers:
         - name: k8s-apiclient
           image: gilesheron/k8s-apiclient:latest

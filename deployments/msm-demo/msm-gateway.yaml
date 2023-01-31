@@ -45,4 +45,4 @@ spec:
             - name: LOCAL_RTP_PORT
               value: "8000"
             - name: MSM_CONTROL_PLANE
-              value: "http://10.96.3.1:9000"
+              value: "http://10.43.3.1:9000"

@@ -5,7 +5,7 @@ metadata:
   labels:
     app: msm-admission-webhook
 spec:
-  clusterIP: 10.96.4.1
+  clusterIP: 10.43.4.1
   ports:
     - port: 443
       targetPort: 443
@@ -54,6 +54,6 @@ spec:
             - name: MSM_LOG_LVL
               value: "TRACE"
             - name: MSM_CONTROL_PLANE
-              value: "http://10.96.3.1:9000"   
+              value: "http://10.43.3.1:9000"   
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
+        node-role.kubernetes.io/control-plane: "true"

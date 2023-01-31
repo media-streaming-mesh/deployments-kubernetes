@@ -41,7 +41,7 @@ metadata:
   labels:
     run: camera
 spec:
-  clusterIP: 10.96.2.2
+  clusterIP: 10.43.2.2
   ports:
   - name: rtsp
     port: 554

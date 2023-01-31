@@ -1,0 +1,10 @@
+./stop-rtsp
+./stop-msm
+sleep 7
+./start-msm
+sleep 5
+./start-rtsp
+sleep 7
+kubectl apply -f msm-gateway.yaml
+sleep 5
+kubectl get pods -o wide

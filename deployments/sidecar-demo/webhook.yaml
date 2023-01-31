@@ -6,7 +6,7 @@ metadata:
   labels:
     app: msm-admission-webhook
 spec:
-  clusterIP: 10.96.0.2
+  clusterIP: 10.43.0.2
   ports:
     - port: 443
       targetPort: 443
@@ -38,7 +38,7 @@ spec:
         operator: Exists
         effect: NoSchedule
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
+        node-role.kubernetes.io/control-plane: "true"
       containers:
         - name: msm-admission-webhook
           image: ciscolabs/msm-admission-webhook:sidecar
