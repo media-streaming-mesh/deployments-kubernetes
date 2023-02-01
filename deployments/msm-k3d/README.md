@@ -38,6 +38,8 @@ Test/Use the new Cluster
 
 example: ```docker cp video.mpeg CONTAINER_ID:/tmp/```
 
+or: ```docker ps | grep "msm-agent" | cut -f 1 -d" " | xargs -I % docker cp ../../videos/video.mjpeg %:/tmp``` (to copy to all agents in one go)
+
 ## Start MSM
 
 Clone Deployment-Kubernetes Repo ```git clone git@github.com:media-streaming-mesh/deployments-kubernetes.git```. Follow the README in msm-demo folder, folder also contains "./start-all" script.
