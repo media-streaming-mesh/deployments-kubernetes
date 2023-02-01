@@ -75,5 +75,5 @@ Open VLC
 
 Open Network source
 
-```rtsp://IP_OF_MSM_GATEWAY_POD:8554/mystream```
+```rtsp://FORWARDING_IP:8080/mystream```
 
