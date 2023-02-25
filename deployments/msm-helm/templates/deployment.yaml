@@ -4,6 +4,7 @@ kind: Deployment
 metadata:
   name: {{ .Values.webhookDeployment }}
   labels:
+    {{- include "msm.labels" . | nindent 4 }}
     app: {{ .Values.webhookDeployment }}
 spec:
   selector:
@@ -50,6 +51,7 @@ kind: Deployment
 metadata:
   name: {{ .Values.controllerName }}
   labels:
+    {{- include "msm.labels" . | nindent 4 }}
     msm: {{ .Values.controllerDeployment }}
   namespace: {{ .Values.nameSpace }}
 spec:
@@ -89,6 +91,7 @@ kind: Deployment
 metadata:
   name: rtsp-client
   labels:
+    {{- include "msm.labels" . | nindent 4 }}
     rtsp: client
   namespace: {{ .Values.nameSpace }}
 spec:
@@ -113,6 +116,7 @@ kind: Deployment
 metadata:
   name: rtsp-server
   labels:
+    {{- include "msm.labels" . | nindent 4 }}
     app: rtsp
   namespace: {{ .Values.nameSpace }}
 spec:

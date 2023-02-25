@@ -5,6 +5,7 @@ metadata:
   name: {{ .Values.cniClusterRole}}
   namespace: {{ .Values.nameSpace }}
   labels:
+    {{- include "msm.labels" . | nindent 4 }}
     app: {{ .Values.cniClusterRole}}
 spec:
   selector:
@@ -90,6 +91,7 @@ kind: DaemonSet
 metadata:
   name: {{ .Values.gatewayDaemonSet }}
   labels:
+    {{- include "msm.labels" . | nindent 4 }}
     msm: {{ .Values.gatewayName }}
   namespace: {{ .Values.nameSpace }}
 spec:

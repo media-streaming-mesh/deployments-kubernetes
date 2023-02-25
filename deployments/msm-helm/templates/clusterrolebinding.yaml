@@ -3,6 +3,8 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ .Values.webhookClusterRoleBinding }}
+  labels:
+    {{- include "msm.labels" . | nindent 4 }}
 subjects:
   - kind: ServiceAccount
     name: {{ .Values.webhookServiceAccount }}
@@ -18,6 +20,7 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ .Values.cniClusterRole }}
   labels:
+    {{- include "msm.labels" . | nindent 4 }}
     app: {{ .Values.cniClusterRole }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -33,6 +36,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: url-handler
+  labels:
+    {{- include "msm.labels" . | nindent 4 }}
 subjects:
   - kind: ServiceAccount
     name: {{ .Values.nameSpace }}

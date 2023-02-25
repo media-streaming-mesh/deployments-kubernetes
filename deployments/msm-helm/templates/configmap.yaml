@@ -5,6 +5,7 @@ metadata:
   name: {{.Values.cniConfigMap}}
   namespace: {{ .Values.nameSpace }}
   labels:
+    {{- include "msm.labels" . | nindent 4 }}
     app: {{ .Values.cniClusterRole}}
 data:
   # The CNI network configuration to chain with an existing CNI plugin on each node.
