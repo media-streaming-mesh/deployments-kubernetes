@@ -1,0 +1,48 @@
+# webhook
+apiVersion: v1
+kind: Service
+metadata:
+  name: msm-admission-webhook-svc
+  labels:
+    app: msm-admission-webhook
+spec:
+  clusterIP: 10.96.4.1
+  ports:
+    - port: 443
+      targetPort: 443
+  selector:
+    app: msm-admission-webhook
+---
+#msm-controller-svc
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.controllerName }}
+  labels:
+    msm: controller
+spec:
+  clusterIP: 10.96.3.1
+  ports:
+    - name: grpc
+      port: 9000
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    msm: controller
+---
+# rtsp-svc
+apiVersion: v1
+kind: Service
+metadata:
+  name: mystream
+  labels:
+    app: rtsp
+spec:
+  clusterIP: 10.96.10.1
+  ports:
+    - name: rtsp
+      port: 554
+      targetPort: 554
+      protocol: TCP
+  selector:
+    app: rtsp
