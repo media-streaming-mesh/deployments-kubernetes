@@ -1,6 +1,6 @@
 apiVersion: v2
 name: msm
-description: A Helm chart for MSM Deployment
+description: A Helm chart for MSM Deployment on Great Bear
 
 # A chart can be either an 'application' or a 'library' chart.
 #
