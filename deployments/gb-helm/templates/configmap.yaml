@@ -1,0 +1,25 @@
+#cni-prep
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{.Values.cniConfigMap}}
+  namespace: {{ .Values.nameSpace }}
+  labels:
+    {{- include "msm.labels" . | nindent 4 }}
+    app: {{ .Values.cniClusterRole}}
+data:
+  # The CNI network configuration to chain with an existing CNI plugin on each node.
+  cni_network_config: |-
+    {
+      "cniVersion": "0.3.1",
+      "name": "msm-cni",
+      "type": "msm-cni",
+      "logLevel": "error",
+      "kubernetes": {
+          "kubeConfig": "__KUBECONFIG_FILEPATH__",
+          "cniBinDir": "/opt/cni/bin",
+          "excludeNamespaces": [ "msm-system" ]
+      }
+    }
+
+

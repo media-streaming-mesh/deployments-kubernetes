@@ -1,0 +1,84 @@
+# webhook
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.webhookDeployment }}
+  labels:
+    app: {{ .Values.webhookDeployment }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.webhookDeployment }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.webhookDeployment }}
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      serviceAccount: {{ .Values.webhookServiceAccount }}
+      containers:
+        - name: {{ .Values.webhookDeployment }}
+          image: "{{ .Values.webhookImage.name }}:{{ .Values.webhookImage.tag }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: REPO
+              value: "ciscolabs"
+            - name: TAG
+              value: "latest"
+            - name: MSM_SIDECAR
+              value: "msm-rtsp-stub"
+            - name: IMAGE_PULL_POLICY
+              value: "IfNotPresent"
+            - name: LOG_LVL
+              value: "DEBUG"
+            - name: MSM_LOG_LVL
+              value: "TRACE"
+            - name: MSM_CONTROL_PLANE
+              value: "http://10.96.3.1:9000"
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+---
+# msm-controller
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.controllerName }}
+  labels:
+    msm: {{ .Values.controllerDeployment }}
+  namespace: {{ .Values.nameSpace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      msm: {{ .Values.controllerDeployment }}
+  template:
+    metadata:
+      labels:
+        msm: {{ .Values.controllerDeployment }}
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: {{ .Values.controllerName }}
+          image: "{{ .Values.controllerImage.name }}:{{ .Values.controllerImage.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: grpc
+              protocol: TCP
+              containerPort: 9000
+          env:
+            - name: LOG_LVL
+              value: "TRACE"
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""

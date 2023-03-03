@@ -1,0 +1,9 @@
+nameSpace: default
+
+clientImage:
+  name: ciscolabs/rtsp-client
+  tag: latest
+
+serverImage:
+  name: ciscolabs/rtsp-server
+  tag: latest
