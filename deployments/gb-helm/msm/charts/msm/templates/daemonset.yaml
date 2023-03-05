@@ -3,7 +3,6 @@ kind: DaemonSet
 apiVersion: apps/v1
 metadata:
   name: {{ .Values.cniClusterRole }}
-  namespace: {{ .Values.nameSpace }}
   labels:
     {{- include "msm.labels" . | nindent 4 }}
     app: {{ .Values.cniClusterRole }}
@@ -93,7 +92,6 @@ metadata:
   labels:
     {{- include "msm.labels" . | nindent 4 }}
     msm: {{ .Values.gatewayName }}
-  namespace: {{ .Values.nameSpace }}
 spec:
   selector:
     matchLabels:

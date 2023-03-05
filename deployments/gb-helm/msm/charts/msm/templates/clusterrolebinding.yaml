@@ -8,7 +8,6 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: {{ .Values.webhookServiceAccount }}
-    namespace: {{ .Values.nameSpace }}
 roleRef:
   kind: ClusterRole
   name: {{ .Values.webhookClusterRole }}
@@ -29,7 +28,6 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ .Values.cniClusterRole }}
-    namespace: {{ .Values.nameSpace }}
 ---
 #msm-controller
 apiVersion: rbac.authorization.k8s.io/v1
@@ -40,8 +38,6 @@ metadata:
     {{- include "msm.labels" . | nindent 4 }}
 subjects:
   - kind: ServiceAccount
-    name: {{ .Values.nameSpace }}
-    namespace: {{ .Values.nameSpace }}
 roleRef:
   kind: ClusterRole
   name: cluster-admin

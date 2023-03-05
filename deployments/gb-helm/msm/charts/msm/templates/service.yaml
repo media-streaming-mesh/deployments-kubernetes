@@ -5,7 +5,6 @@ metadata:
   name: msm-admission-webhook-svc
   labels:
     {{- include "msm.labels" . | nindent 4 }}
-    app: msm-admission-webhook
 spec:
   clusterIP: 10.96.4.1
   ports:

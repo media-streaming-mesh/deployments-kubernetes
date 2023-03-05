@@ -1,5 +1,3 @@
-nameSpace: default
-
 cniClusterRole: msm-cni
 
 cniConfigMap: msm-cni-config

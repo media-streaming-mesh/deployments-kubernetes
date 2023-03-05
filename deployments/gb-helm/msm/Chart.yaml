@@ -1,0 +1,7 @@
+apiVersion: v2
+dependencies:
+- name: msm
+  repository: ""
+  version: 0.1.0
+name: MSM
+version: 1.0.0
