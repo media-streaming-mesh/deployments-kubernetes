@@ -40,7 +40,7 @@ metadata:
     {{- include "msm.labels" . | nindent 4 }}
 subjects:
   - kind: ServiceAccount
-    name: default
+    name: gbear
     namespace: gbear
 roleRef:
   kind: ClusterRole
