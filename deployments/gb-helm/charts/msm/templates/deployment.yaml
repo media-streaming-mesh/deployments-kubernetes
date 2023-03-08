@@ -43,7 +43,7 @@ spec:
             - name: MSM_CONTROL_PLANE
               value: "http://10.43.3.1:9000"
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
+        node-role.kubernetes.io/control-plane: "true"
 ---
 # msm-controller
 apiVersion: apps/v1
