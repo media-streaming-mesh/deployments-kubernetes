@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mystream2
+  labels:
+    app: rtsp2
+spec:
+  clusterIP: 10.96.10.2
+  ports:
+    - name: rtsp
+      port: 554
+      targetPort: 554
+      protocol: TCP
+  selector:
+    app: rtsp2

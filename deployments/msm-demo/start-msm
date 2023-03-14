@@ -1,5 +1,6 @@
 kubectl apply -f webhook-prep.yaml
 kubectl apply -f cni-prep.yaml
+kubectl apply -f controller-prep.yaml
 kubectl apply -f cni.yaml
 kubectl apply -f webhook.yaml
 sleep 1

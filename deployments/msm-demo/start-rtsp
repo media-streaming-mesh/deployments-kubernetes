@@ -1,3 +1,5 @@
 kubectl apply -f rtsp-server.yaml
 kubectl apply -f rtsp-svc.yaml
+kubectl apply -f rtsp-server2.yaml
+kubectl apply -f rtsp-svc2.yaml
 kubectl apply -f rtsp-client.yaml

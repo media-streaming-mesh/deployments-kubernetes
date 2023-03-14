@@ -3,16 +3,16 @@ kind: DaemonSet
 metadata:
   name: msm-proxy
   labels:
-    msm: proxy 
+    msm: proxy
   namespace: default
 spec:
   selector:
     matchLabels:
-      msm: proxy 
+      msm: proxy
   template:
     metadata:
       labels:
-        msm: proxy 
+        msm: proxy
     spec:
       hostNetwork: true
       containers:
