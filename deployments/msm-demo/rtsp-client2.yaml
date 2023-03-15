@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rtsp-client
+  name: rtsp-client2
   labels:
     rtsp: client
   namespace: default

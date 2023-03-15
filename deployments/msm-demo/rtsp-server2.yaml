@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rtsp-server
+  name: rtsp-server2
   labels:
-    app: rtsp
+    app: rtsp2
   namespace: default
 spec:
   selector:
     matchLabels:
-      app: rtsp
+      app: rtsp2
   template:
     metadata:
       labels:
-        app: rtsp
+        app: rtsp2
       annotations:
         sidecar.mediastreamingmesh.io/inject: "true"
     spec:
@@ -24,7 +24,7 @@ spec:
           image: ciscolabs/rtsp-client:latest
           imagePullPolicy: IfNotPresent
           command: ["ffmpeg"]
-          args: ["-re", "-stream_loop", "-100", "-i", "/tmp/video.mjpeg", "-input_format", "mjpeg", "-an", "-pix_fmt", "yuvj420p", "-vcodec", "mjpeg", "-huffman", "default", "-f", "rtsp", "rtsp://0.0.0.0:554/mystream"]
+          args: ["-re", "-stream_loop", "-100", "-i", "/tmp/video2.mjpeg", "-input_format", "mjpeg", "-an", "-pix_fmt", "yuvj420p", "-vcodec", "mjpeg", "-huffman", "default", "-f", "rtsp", "rtsp://0.0.0.0:554/mystream2"]
           volumeMounts:
             - mountPath: /tmp
               name: movies

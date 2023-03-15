@@ -3,5 +3,6 @@ kubectl delete -f msm-controller-svc.yaml
 kubectl delete -f msm-controller.yaml
 kubectl delete -f webhook.yaml
 kubectl delete -f cni.yaml
+kubectl delete -f controller-prep.yaml
 kubectl delete -f cni-prep.yaml
 kubectl delete -f webhook-prep.yaml

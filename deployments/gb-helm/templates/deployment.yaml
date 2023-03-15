@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.webhookDeployment }}
+  name: msm-admission-webhook
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
-    app: {{ .Values.webhookDeployment }}
+    app: msm-admission-webhook
+    {{- include "MSM.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.webhookDeployment }}
+      app: msm-admission-webhook
   template:
     metadata:
       labels:
-        app: {{ .Values.webhookDeployment }}
+        app: msm-admission-webhook
     spec:
       tolerations:
         - key: node-role.kubernetes.io/master
@@ -22,16 +22,16 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
-      serviceAccount: {{ .Values.webhookServiceAccount }}
+      serviceAccount: msm-admission-webhook-sa
       containers:
-        - name: {{ .Values.webhookDeployment }}
-          image: "{{ .Values.webhookImage.name }}:{{ .Values.webhookImage.tag }}"
+        - name: msm-admission-webhook
+          image: ciscolabs/msm-admission-webhook:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: REPO
-              value: "ciscolabs"
+              value: "dockerhub.cisco.com/docker.io/ciscolabs"
             - name: TAG
-              value: "latest"
+              value: "20230215e"
             - name: MSM_SIDECAR
               value: "msm-rtsp-stub"
             - name: IMAGE_PULL_POLICY
@@ -39,30 +39,31 @@ spec:
             - name: LOG_LVL
               value: "DEBUG"
             - name: MSM_LOG_LVL
-              value: "TRACE"
+              value: "DEBUG"
             - name: MSM_CONTROL_PLANE
-              value: "http://10.96.3.1:9000"
+              value: "http://10.43.3.1:9000"
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
+        node-role.kubernetes.io/control-plane: "true"
+
 ---
 # msm-controller
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.controllerName }}
+  name: msm-controller
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
-    msm: {{ .Values.controllerDeployment }}
-  namespace: {{ .Values.nameSpace }}
+    msm: controller
+    {{- include "MSM.labels" . | nindent 4 }}
+  namespace: gbear
 spec:
   replicas: 1
   selector:
     matchLabels:
-      msm: {{ .Values.controllerDeployment }}
+      msm: controller
   template:
     metadata:
       labels:
-        msm: {{ .Values.controllerDeployment }}
+        msm: controller
     spec:
       tolerations:
         - key: node-role.kubernetes.io/master
@@ -71,9 +72,10 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+      serviceAccountName: msm-controller
       containers:
-        - name: {{ .Values.controllerName }}
-          image: "{{ .Values.controllerImage.name }}:{{ .Values.controllerImage.tag }}"
+        - name: msm-controller
+          image: ciscolabs/msm-controller:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: grpc
@@ -83,7 +85,7 @@ spec:
             - name: LOG_LVL
               value: "TRACE"
       nodeSelector:
-        node-role.kubernetes.io/control-plane: ""
+        node-role.kubernetes.io/control-plane: "true"
 ---
 # rtsp-client
 apiVersion: apps/v1
@@ -91,10 +93,11 @@ kind: Deployment
 metadata:
   name: rtsp-client
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
     rtsp: client
-  namespace: {{ .Values.nameSpace }}
+    {{- include "MSM.labels" . | nindent 4 }}
+  namespace: gbear
 spec:
+  replicas: 2
   selector:
     matchLabels:
       rtsp: client
@@ -107,18 +110,44 @@ spec:
     spec:
       containers:
         - name: rtsp-client
-          image: "{{ .Values.clientImage.name }}:{{ .Values.clientImage.tag }}"
+          image: ciscolabs/rtsp-client:latest
+          imagePullPolicy: IfNotPresent
+---
+# rtsp-client 2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rtsp-client2
+  labels:
+    rtsp: client
+    {{- include "MSM.labels" . | nindent 4 }}
+  namespace: gbear
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      rtsp: client
+  template:
+    metadata:
+      labels:
+        rtsp: client
+      annotations:
+        sidecar.mediastreamingmesh.io/inject: "true"
+    spec:
+      containers:
+        - name: rtsp-client
+          image: ciscolabs/rtsp-client:latest
           imagePullPolicy: IfNotPresent
 ---
 # rtsp-server
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  {{- include "msm.labels" . | nindent 4 }}
   name: rtsp-server
   labels:
     app: rtsp
-  namespace: {{ .Values.nameSpace }}
+    {{- include "MSM.labels" . | nindent 4 }}
+  namespace: gbear
 spec:
   selector:
     matchLabels:
@@ -132,31 +161,50 @@ spec:
     spec:
       containers:
         - name: rtsp-server
-          image: "{{ .Values.serverImage.name }}:{{ .Values.serverImage.tag }}"
+          image: ciscolabs/rtsp-server:latest
           imagePullPolicy: IfNotPresent
         - name: rtsp-client
-          image: "{{ .Values.clientImage.name }}:{{ .Values.clientImage.tag }}"
+          image: ciscolabs/rtsp-client:latest
           imagePullPolicy: IfNotPresent
           command: ["ffmpeg"]
-          args:
-            [
-              "-re",
-              "-stream_loop",
-              "-100",
-              "-i",
-              "/tmp/video.mjpeg",
-              "-input_format",
-              "mjpeg",
-              "-pix_fmt",
-              "yuvj420p",
-              "-vcodec",
-              "mjpeg",
-              "-huffman",
-              "default",
-              "-f",
-              "rtsp",
-              "rtsp://0.0.0.0:554/mystream",
-            ]
+          args: ["-re", "-stream_loop", "-100", "-i", "/tmp/video.mjpeg", "-input_format", "mjpeg", "-an", "-pix_fmt", "yuvj420p", "-vcodec", "mjpeg", "-huffman", "default", "-f", "rtsp", "rtsp://0.0.0.0:554/mystream"]
+          volumeMounts:
+            - mountPath: /tmp
+              name: movies
+      volumes:
+        - name: movies
+          hostPath:
+            path: /tmp
+---
+# rtsp-server 2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rtsp-server2
+  labels:
+    app: rtsp2
+    {{- include "MSM.labels" . | nindent 4 }}
+  namespace: gbear
+spec:
+  selector:
+    matchLabels:
+      app: rtsp2
+  template:
+    metadata:
+      labels:
+        app: rtsp2
+      annotations:
+        sidecar.mediastreamingmesh.io/inject: "true"
+    spec:
+      containers:
+        - name: rtsp-server
+          image: ciscolabs/rtsp-server:latest
+          imagePullPolicy: IfNotPresent
+        - name: rtsp-client
+          image: ciscolabs/rtsp-client:latest
+          imagePullPolicy: IfNotPresent
+          command: ["ffmpeg"]
+          args: ["-re", "-stream_loop", "-100", "-i", "/tmp/video2.mjpeg", "-input_format", "mjpeg", "-an", "-pix_fmt", "yuvj420p", "-vcodec", "mjpeg", "-huffman", "default", "-f", "rtsp", "rtsp://0.0.0.0:554/mystream2"]
           volumeMounts:
             - mountPath: /tmp
               name: movies

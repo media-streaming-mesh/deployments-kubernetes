@@ -3,21 +3,21 @@ kind: DaemonSet
 metadata:
   name: msm-gateway
   labels:
-    msm: gateway 
+    msm: gateway
   namespace: default
 spec:
   selector:
     matchLabels:
-      msm: gateway 
+      msm: gateway
   template:
     metadata:
       labels:
-        msm: gateway 
+        msm: gateway
     spec:
       hostNetwork: true
       containers:
         - name: msm-proxy
-          image: ciscolabs/msm-proxy:latest
+          image: dockerhub.cisco.com/docker.io/ciscolabs/msm-proxy:20230123
           imagePullPolicy: IfNotPresent
           ports:
             - name: rtp
@@ -33,15 +33,15 @@ spec:
             - name: LOG_LVL
               value: "DEBUG"
         - name: msm-rtsp-stub
-          image: ciscolabs/msm-rtsp-stub:latest
-          imagePullPolicy: IfNotPresent 
+          image: dockerhub.cisco.com/docker.io/ciscolabs/msm-rtsp-stub:20230215e
+          imagePullPolicy: IfNotPresent
           ports:
             - name: rtsp
               protocol: TCP
               containerPort: 8554
           env:
             - name: MSM_LOG_LVL
-              value: "TRACE"
+              value: "DEBUG"
             - name: LOCAL_RTP_PORT
               value: "8000"
             - name: MSM_CONTROL_PLANE

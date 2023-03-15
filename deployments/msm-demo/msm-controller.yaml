@@ -1,16 +1,3 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: url-handler
-subjects:
-  - kind: ServiceAccount
-    name: default
-    namespace: default
-roleRef:
-  kind: ClusterRole
-  name: cluster-admin
-  apiGroup: rbac.authorization.k8s.io
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,10 +22,11 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+      serviceAccountName: msm-controller
       containers:
         - name: msm-controller
-          image: ciscolabs/msm-controller:latest
-          imagePullPolicy: IfNotPresent 
+          image: dockerhub.cisco.com/docker.io/ciscolabs/msm-controller:latest
+          imagePullPolicy: Always
           ports:
             - name: grpc
               protocol: TCP

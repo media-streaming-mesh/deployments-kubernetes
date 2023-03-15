@@ -1,3 +1,5 @@
 kubectl delete -f rtsp-client.yaml
 kubectl delete -f rtsp-svc.yaml
 kubectl delete -f rtsp-server.yaml
+kubectl delete -f rtsp-svc2.yaml
+kubectl delete -f rtsp-server2.yaml

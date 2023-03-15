@@ -2,34 +2,36 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .Values.webhookClusterRoleBinding }}
+  name: msm-admission-webhook-binding
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
+    {{- include "MSM.labels" . | nindent 4 }}
 subjects:
   - kind: ServiceAccount
-    name: {{ .Values.webhookServiceAccount }}
-    namespace: {{ .Values.nameSpace }}
+    name: msm-admission-webhook-sa
+    namespace: gbear
 roleRef:
   kind: ClusterRole
-  name: {{ .Values.webhookClusterRole }}
+  name: msm-admission-webhook-role
   apiGroup: rbac.authorization.k8s.io
+
 ---
 #cni-prep
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ .Values.cniClusterRole }}
+  name: msm-cni
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
-    app: {{ .Values.cniClusterRole }}
+    app: msm-cni
+    {{- include "MSM.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ .Values.cniClusterRole }}
+  name: msm-cni
 subjects:
   - kind: ServiceAccount
-    name: {{ .Values.cniClusterRole }}
-    namespace: {{ .Values.nameSpace }}
+    name: msm-cni
+    namespace: gbear
+
 ---
 #msm-controller
 apiVersion: rbac.authorization.k8s.io/v1
@@ -37,12 +39,28 @@ kind: ClusterRoleBinding
 metadata:
   name: url-handler
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
-subjects:
-  - kind: ServiceAccount
-    name: {{ .Values.nameSpace }}
-    namespace: {{ .Values.nameSpace }}
+    {{- include "MSM.labels" . | nindent 4 }}
 roleRef:
   kind: ClusterRole
-  name: cluster-admin
+  name: url-handler
   apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: msm-controller
+    namespace: gbear
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: node-watcher
+  labels:
+    app: msm-controller
+    {{- include "MSM.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: node-watcher
+subjects:
+  - kind: ServiceAccount
+    name: msm-controller
+    namespace: gbear

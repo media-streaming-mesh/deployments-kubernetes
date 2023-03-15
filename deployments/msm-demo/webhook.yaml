@@ -42,9 +42,9 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: REPO
-              value: "ciscolabs"
+              value: "dockerhub.cisco.com/docker.io/ciscolabs"
             - name: TAG
-              value: "latest"
+              value: "20230215e"
             - name: MSM_SIDECAR
               value: "msm-rtsp-stub"
             - name: IMAGE_PULL_POLICY
@@ -52,7 +52,7 @@ spec:
             - name: LOG_LVL
               value: "DEBUG"
             - name: MSM_LOG_LVL
-              value: "TRACE"
+              value: "DEBUG"
             - name: MSM_CONTROL_PLANE
               value: "http://10.96.3.1:9000"   
       nodeSelector:
