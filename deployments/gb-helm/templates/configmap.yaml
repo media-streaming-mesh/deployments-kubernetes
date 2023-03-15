@@ -2,10 +2,11 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{.Values.cniConfigMap}}
+  name: msm-cni-config
+  namespace: gbear
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
-    app: {{ .Values.cniClusterRole}}
+    app: msm-cni
+    {{- include "MSM.labels" . | nindent 4 }}
 data:
   # The CNI network configuration to chain with an existing CNI plugin on each node.
   cni_network_config: |-
@@ -20,5 +21,4 @@ data:
           "excludeNamespaces": [ "msm-system" ]
       }
     }
-
 

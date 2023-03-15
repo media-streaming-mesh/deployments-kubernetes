@@ -1,0 +1,66 @@
+# webhook-prep
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: msm-admission-webhook-binding
+  labels:
+    {{- include "MSM.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: msm-admission-webhook-sa
+    namespace: gbear
+roleRef:
+  kind: ClusterRole
+  name: msm-admission-webhook-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+#cni-prep
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: msm-cni
+  labels:
+    app: msm-cni
+    {{- include "MSM.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: msm-cni
+subjects:
+  - kind: ServiceAccount
+    name: msm-cni
+    namespace: gbear
+
+---
+#msm-controller
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: url-handler
+  labels:
+    {{- include "MSM.labels" . | nindent 4 }}
+roleRef:
+  kind: ClusterRole
+  name: url-handler
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: msm-controller
+    namespace: gbear
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: node-watcher
+  labels:
+    app: msm-controller
+    {{- include "MSM.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: node-watcher
+subjects:
+  - kind: ServiceAccount
+    name: msm-controller
+    namespace: gbear

@@ -2,14 +2,15 @@
 kind: DaemonSet
 apiVersion: apps/v1
 metadata:
-  name: {{ .Values.cniClusterRole }}
+  name: msm-cni
+  namespace: gbear
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
-    app: {{ .Values.cniClusterRole }}
+    app: msm-cni
+    {{- include "MSM.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.cniClusterRole }}
+      app: msm-cni
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,28 +18,16 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Values.cniClusterRole }}
-      annotations:
-        # This, along with the CriticalAddonsOnly toleration below,
-        # marks the pod as a critical add-on, ensuring it gets
-        # priority scheduling and that its resources are reserved
-        # if it ever gets evicted.
-        scheduler.alpha.kubernetes.io/critical-pod: ""
+        app: msm-cni
     spec:
       nodeSelector:
         kubernetes.io/os: linux
       hostNetwork: true
       tolerations:
-        # Make sure msm-cni gets scheduled on all nodes.
-        - effect: NoSchedule
-          operator: Exists
-        # Mark the pod as a critical add-on for rescheduling.
-        - key: CriticalAddonsOnly
-          operator: Exists
         - effect: NoExecute
           operator: Exists
       priorityClassName: system-node-critical
-      serviceAccountName: {{ .Values.cniClusterRole }}
+      serviceAccountName: msm-cni
       # Minimize downtime during a rolling upgrade or deletion; tell Kubernetes to do a "force
       # deletion": https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods.
       terminationGracePeriodSeconds: 5
@@ -46,7 +35,7 @@ spec:
         # This container installs the MSM CNI binaries
         # and CNI network config file on each node.
         - name: installer
-          image: "{{ .Values.cniImage.name }}:{{ .Values.cniImage.tag }}"
+          image: ciscolabs/msm-cni:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -63,7 +52,7 @@ spec:
             - name: CNI_NETWORK_CONFIG
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.cniConfigMap }}
+                  name: msm-cni-config
                   key: cni_network_config
             - name: CNI_NET_DIR
               value: /etc/cni/net.d
@@ -88,23 +77,24 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ .Values.gatewayDaemonSet }}
+  name: msm-gateway
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
-    msm: {{ .Values.gatewayName }}
+    msm: gateway
+    {{- include "MSM.labels" . | nindent 4 }}
+  namespace: gbear
 spec:
   selector:
     matchLabels:
-      msm: {{ .Values.gatewayName }}
+      msm: gateway
   template:
     metadata:
       labels:
-        msm: {{ .Values.gatewayName }}
+        msm: gateway
     spec:
       hostNetwork: true
       containers:
         - name: msm-proxy
-          image: "{{ .Values.proxyImage.name }}:{{ .Values.proxyImage.tag }}"
+          image: ciscolabs/msm-proxy:20230123
           imagePullPolicy: IfNotPresent
           ports:
             - name: rtp
@@ -120,7 +110,7 @@ spec:
             - name: LOG_LVL
               value: "DEBUG"
         - name: msm-rtsp-stub
-          image: "{{ .Values.stubImage.name }}:{{ .Values.stubImage.tag }}"
+          image: ciscolabs/msm-rtsp-stub:20230215e
           imagePullPolicy: IfNotPresent
           ports:
             - name: rtsp
@@ -128,7 +118,7 @@ spec:
               containerPort: 8554
           env:
             - name: MSM_LOG_LVL
-              value: "TRACE"
+              value: "DEBUG"
             - name: LOCAL_RTP_PORT
               value: "8000"
             - name: MSM_CONTROL_PLANE

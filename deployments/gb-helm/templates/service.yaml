@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: msm-admission-webhook-svc
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
+    app: msm-admission-webhook
+    {{- include "MSM.labels" . | nindent 4 }}
 spec:
   clusterIP: 10.43.4.1
   ports:
@@ -12,15 +13,16 @@ spec:
       targetPort: 443
   selector:
     app: msm-admission-webhook
+
 ---
 #msm-controller-svc
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.controllerName }}
+  name: msm-controller
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
     msm: controller
+    {{- include "MSM.labels" . | nindent 4 }}
 spec:
   clusterIP: 10.43.3.1
   ports:
@@ -30,6 +32,7 @@ spec:
       protocol: TCP
   selector:
     msm: controller
+
 ---
 # rtsp-svc
 apiVersion: v1
@@ -37,8 +40,8 @@ kind: Service
 metadata:
   name: mystream
   labels:
-    {{- include "msm.labels" . | nindent 4 }}
     app: rtsp
+    {{- include "MSM.labels" . | nindent 4 }}
 spec:
   clusterIP: 10.43.10.1
   ports:
@@ -48,3 +51,21 @@ spec:
       protocol: TCP
   selector:
     app: rtsp
+---
+# rtsp-svc 2
+apiVersion: v1
+kind: Service
+metadata:
+  name: mystream2
+  labels:
+    app: rtsp2
+    {{- include "MSM.labels" . | nindent 4 }}
+spec:
+  clusterIP: 10.43.10.2
+  ports:
+    - name: rtsp
+      port: 554
+      targetPort: 554
+      protocol: TCP
+  selector:
+    app: rtsp2

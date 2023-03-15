@@ -1,0 +1,63 @@
+# webhook-prep
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: msm-admission-webhook-role
+  labels:
+    {{- include "MSM.labels" . | nindent 4 }}
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+rules:
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources:
+      - "mutatingwebhookconfigurations"
+    verbs: ["*"]
+---
+#cni-prep
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: msm-cni
+  labels:
+    app: msm-cni
+    {{- include "MSM.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods
+      - nodes
+    verbs:
+      - get
+---
+# controller-prep
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: url-handler
+  labels:
+    app: msm-controller
+    {{- include "MSM.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources:
+      - services
+      - nodes
+      - endpoints
+    verbs:
+      - list
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: node-watcher
+  labels:
+    app: msm-controller
+    {{- include "MSM.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources:
+      - nodes
+    verbs:
+      - watch
+
