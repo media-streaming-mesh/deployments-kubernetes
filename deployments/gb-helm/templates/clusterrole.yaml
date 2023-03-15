@@ -40,6 +40,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources:
+      - namespaces
       - services
       - nodes
       - endpoints
