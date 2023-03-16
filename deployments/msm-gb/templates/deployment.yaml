@@ -29,7 +29,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: REPO
-              value: "dockerhub.cisco.com/docker.io/ciscolabs"
+              value: "ciscolabs"
             - name: TAG
               value: "20230215e"
             - name: MSM_SIDECAR

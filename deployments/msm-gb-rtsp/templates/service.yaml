@@ -1,0 +1,35 @@
+# rtsp-svc
+apiVersion: v1
+kind: Service
+metadata:
+  name: mystream
+  labels:
+    app: rtsp
+    {{- include "msm-rtsp.labels" . | nindent 4 }}
+spec:
+  clusterIP: 10.43.10.1
+  ports:
+    - name: rtsp
+      port: 554
+      targetPort: 554
+      protocol: TCP
+  selector:
+    app: rtsp
+---
+# rtsp-svc 2
+apiVersion: v1
+kind: Service
+metadata:
+  name: mystream2
+  labels:
+    app: rtsp2
+    {{- include "msm-rtsp.labels" . | nindent 4 }}
+spec:
+  clusterIP: 10.43.10.2
+  ports:
+    - name: rtsp
+      port: 554
+      targetPort: 554
+      protocol: TCP
+  selector:
+    app: rtsp2
