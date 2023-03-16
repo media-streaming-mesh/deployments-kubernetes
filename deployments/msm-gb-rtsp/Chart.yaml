@@ -1,0 +1,3 @@
+apiVersion: v2
+name: msm-rtsp
+version: 1.0.0
