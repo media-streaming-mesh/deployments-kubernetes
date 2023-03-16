@@ -75,7 +75,7 @@ spec:
       serviceAccountName: msm-controller
       containers:
         - name: msm-controller
-          image: ciscolabs/msm-controller:20230315d
+          image: ciscolabs/msm-controller:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: grpc
