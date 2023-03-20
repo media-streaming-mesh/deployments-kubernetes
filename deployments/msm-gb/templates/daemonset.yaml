@@ -94,7 +94,7 @@ spec:
       hostNetwork: true
       containers:
         - name: msm-proxy
-          image: ciscolabs/msm-proxy:20230123
+          image: ciscolabs/msm-proxy:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: rtp
@@ -110,7 +110,7 @@ spec:
             - name: LOG_LVL
               value: "DEBUG"
         - name: msm-rtsp-stub
-          image: ciscolabs/msm-rtsp-stub:20230215e
+          image: ciscolabs/msm-rtsp-stub:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: rtsp
