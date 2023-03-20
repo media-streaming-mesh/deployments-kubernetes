@@ -1,0 +1,53 @@
+displayName: MSM-RTSP
+description: RTSP Server and (Internal) Client for MSM App
+# The following optional fields provide a more detailed properties to describe your GBAP.
+# Uncomment as required and modify field values specifically for your application.
+
+# Specify whether the application should be deployed once per great bear site (defaults to false if not explicitly defined)
+singleton: true
+
+# A dictionary (key-values) to label applications to handle specially like kind: EXAMPLE These should be explicit attributes.
+#labels:
+#   kind: EXAMPLE
+
+# A list of tags used by the Great Bear application store to present applications such as e.g the private attribute.
+#tags:
+#   - example-apps
+#   - blog
+
+# A list of architectures supported like [amd64, arm64v8]
+#architectures:
+#   - amd64
+
+# A path/URL of icon to use in the app store
+icon: https://www.mediastreamingmesh.io/assets/shared/logos/logo-dark-horizontal-svg.svg
+
+# A list of configuration fields that are provided as run-time values of the Helm deployment. 
+#configuration:
+#   - name: outputMessage                       # The name of the field.
+#     key: application.message                  # A dot-separated name where the value of this field will be added to the Helm values. Like postgres.image.tag. Defaults to config.{name} (current behavior).
+#     title: Output message                     # The label of the parameter to be displayed on the Great Bear dashboard when deploying the application.
+#     description: Message sent to the user     # The description of the parameter to be displayed on the Great Bear dashboard when deploying the application.
+#     value: Hello World                        # The default value of the parameter
+#     type: String                              # A simple string, rendered as a textbox
+#   - name: password
+#     key: application.password
+#     title: Initial password
+#     type: Secret                              # A string, rendered as a password input.
+#   - nodeport
+#     key: service.nodePorts.https
+#     type: NodePort                            # A port number in the 30000-32767 range.
+#     title: Node port to serve HTTPS on
+#     value: 37777
+#   - name: sitename
+#     key: application.mySite
+#     type: Runtime                             # An injected variable via Go Templating performed on the value of this field. Field is not shown on the UI.
+#     value: This application is running in {{.GB_SITE_ID}}  # This value will be substituted by GB when the application is deployed to the edge
+#   - name: forceLoginToggle
+#     key: application.forceLogin
+#     choices: [yes, no]                         # UI renders the parameter as a toggle switch, the UI will recognise the [yes, no] options as a toggle switch.
+#     value: yes                                 # Dashboard will display a toggle switch in the enabled position
+#   - name: applicationTextColor
+#     key: application.textColor
+#     choices: [black, red, blue]                # UI renders the parameter as a dropdown list, containing the specified values.
+#     value: red                                 # Dashboard will display a dropdown list with specified value 'red' as the default

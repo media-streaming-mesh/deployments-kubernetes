@@ -1,92 +1,3 @@
-# webhook
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: msm-admission-webhook
-  labels:
-    app: msm-admission-webhook
-    {{- include "MSM.labels" . | nindent 4 }}
-spec:
-  selector:
-    matchLabels:
-      app: msm-admission-webhook
-  template:
-    metadata:
-      labels:
-        app: msm-admission-webhook
-    spec:
-      tolerations:
-        - key: node-role.kubernetes.io/master
-          operator: Exists
-          effect: NoSchedule
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-      serviceAccount: msm-admission-webhook-sa
-      containers:
-        - name: msm-admission-webhook
-          image: ciscolabs/msm-admission-webhook:latest
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: REPO
-              value: "dockerhub.cisco.com/docker.io/ciscolabs"
-            - name: TAG
-              value: "20230215e"
-            - name: MSM_SIDECAR
-              value: "msm-rtsp-stub"
-            - name: IMAGE_PULL_POLICY
-              value: "IfNotPresent"
-            - name: LOG_LVL
-              value: "DEBUG"
-            - name: MSM_LOG_LVL
-              value: "DEBUG"
-            - name: MSM_CONTROL_PLANE
-              value: "http://10.43.3.1:9000"
-      nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
-
----
-# msm-controller
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: msm-controller
-  labels:
-    msm: controller
-    {{- include "MSM.labels" . | nindent 4 }}
-  namespace: gbear
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      msm: controller
-  template:
-    metadata:
-      labels:
-        msm: controller
-    spec:
-      tolerations:
-        - key: node-role.kubernetes.io/master
-          operator: Exists
-          effect: NoSchedule
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-      serviceAccountName: msm-controller
-      containers:
-        - name: msm-controller
-          image: ciscolabs/msm-controller:latest
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: grpc
-              protocol: TCP
-              containerPort: 9000
-          env:
-            - name: LOG_LVL
-              value: "TRACE"
-      nodeSelector:
-        node-role.kubernetes.io/control-plane: "true"
----
 # rtsp-client
 apiVersion: apps/v1
 kind: Deployment
@@ -94,7 +5,7 @@ metadata:
   name: rtsp-client
   labels:
     rtsp: client
-    {{- include "MSM.labels" . | nindent 4 }}
+    {{- include "msm-rtsp.labels" . | nindent 4 }}
   namespace: gbear
 spec:
   replicas: 2
@@ -103,6 +14,7 @@ spec:
       rtsp: client
   template:
     metadata:
+      namespace: gbear
       labels:
         rtsp: client
       annotations:
@@ -120,7 +32,7 @@ metadata:
   name: rtsp-client2
   labels:
     rtsp: client
-    {{- include "MSM.labels" . | nindent 4 }}
+    {{- include "msm-rtsp.labels" . | nindent 4 }}
   namespace: gbear
 spec:
   replicas: 2
@@ -129,6 +41,7 @@ spec:
       rtsp: client
   template:
     metadata:
+      namespace: gbear
       labels:
         rtsp: client
       annotations:
@@ -146,7 +59,7 @@ metadata:
   name: rtsp-server
   labels:
     app: rtsp
-    {{- include "MSM.labels" . | nindent 4 }}
+    {{- include "msm-rtsp.labels" . | nindent 4 }}
   namespace: gbear
 spec:
   selector:
@@ -154,6 +67,7 @@ spec:
       app: rtsp
   template:
     metadata:
+      namespace: gbear
       labels:
         app: rtsp
       annotations:
@@ -183,7 +97,7 @@ metadata:
   name: rtsp-server2
   labels:
     app: rtsp2
-    {{- include "MSM.labels" . | nindent 4 }}
+    {{- include "msm-rtsp.labels" . | nindent 4 }}
   namespace: gbear
 spec:
   selector:
@@ -191,6 +105,7 @@ spec:
       app: rtsp2
   template:
     metadata:
+      namespace: gbear
       labels:
         app: rtsp2
       annotations:

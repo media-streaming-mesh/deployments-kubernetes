@@ -1,0 +1,17 @@
+# camera
+apiVersion: v1
+kind: Service
+metadata:
+  name: giles-study
+  labels:
+    app: camera
+    {{- include "Camera.labels" . | nindent 4 }}
+spec:
+  clusterIP: 10.43.10.2
+  ports:
+    - name: rtsp
+      port: 554
+      targetPort: 554
+      protocol: TCP
+  selector:
+    app: camera

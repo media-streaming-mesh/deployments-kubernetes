@@ -61,4 +61,3 @@ rules:
       - nodes
     verbs:
       - watch
-
