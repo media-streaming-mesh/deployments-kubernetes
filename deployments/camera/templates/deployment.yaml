@@ -1,20 +1,20 @@
-# camera
+# Giles Study Camera
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: camera
+  name: camera-giles
   labels:
     {{- include "Camera.labels" . | nindent 4 }}
-    app: camera
+    app: camera-giles
   namespace: gbear
 spec:
   selector:
     matchLabels:
-      app: camera
+      app: camera-giles
   template:
     metadata:
       labels:
-        app: camera
+        app: camera-giles
     spec:
       containers:
         - name: rtsp-server
@@ -25,6 +25,42 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["ffmpeg"]
           args: ["-rtsp_transport", "tcp", "-i", "rtsp://msm:RUSTsuxr0x@82.36.109.33:8554/s1", "-an", "-c:v", "copy", "-f", "rtsp", "rtsp://127.0.0.1:554/giles-study"]
+        - name: msm-rtsp-stub
+          image: ciscolabs/msm-rtsp-stub:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MSM_LOG_LVL
+              value: "DEBUG"
+            - name: MSM_CONTROL_PLANE
+              value: "http://10.43.3.1:9000"
+---
+# Ammar Camera
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: camera-ali
+  labels:
+    {{- include "Camera.labels" . | nindent 4 }}
+    app: camera-ali
+  namespace: gbear
+spec:
+  selector:
+    matchLabels:
+      app: camera-ali
+  template:
+    metadata:
+      labels:
+        app: camera-ali
+    spec:
+      containers:
+        - name: rtsp-server
+          image: ciscolabs/rtsp-server:latest
+          imagePullPolicy: IfNotPresent
+        - name: rtsp-client
+          image: ciscolabs/rtsp-client:latest
+          imagePullPolicy: IfNotPresent
+          command: ["ffmpeg"]
+          args: ["-rtsp_transport", "tcp", "-i", "rtsp://73.192.165.3:8554/unicast", "-an", "-c:v", "copy", "-f", "rtsp", "rtsp://127.0.0.1:554/live"]
         - name: msm-rtsp-stub
           image: ciscolabs/msm-rtsp-stub:latest
           imagePullPolicy: IfNotPresent

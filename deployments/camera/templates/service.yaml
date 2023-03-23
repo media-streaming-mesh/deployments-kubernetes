@@ -1,10 +1,10 @@
-# camera
+# Giles Study Camera Service
 apiVersion: v1
 kind: Service
 metadata:
   name: giles-study
   labels:
-    app: camera
+    app: camera-giles
     {{- include "Camera.labels" . | nindent 4 }}
 spec:
   clusterIP: 10.43.10.2
@@ -14,4 +14,22 @@ spec:
       targetPort: 554
       protocol: TCP
   selector:
-    app: camera
+    app: camera-giles
+---
+# Ammar Camera Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: live
+  labels:
+    app: camera-ali
+    {{- include "Camera.labels" . | nindent 4 }}
+spec:
+  clusterIP: 10.43.10.3
+  ports:
+    - name: rtsp
+      port: 554
+      targetPort: 554
+      protocol: TCP
+  selector:
+    app: camera-ali
