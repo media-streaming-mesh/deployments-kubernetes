@@ -44,7 +44,7 @@ spec:
             - name: REPO
               value: "dockerhub.cisco.com/docker.io/ciscolabs"
             - name: TAG
-              value: "20230215e"
+              value: "latest"
             - name: MSM_SIDECAR
               value: "msm-rtsp-stub"
             - name: IMAGE_PULL_POLICY
@@ -54,6 +54,18 @@ spec:
             - name: MSM_LOG_LVL
               value: "DEBUG"
             - name: MSM_CONTROL_PLANE
-              value: "http://10.96.3.1:9000"   
+              value: "http://10.96.3.1:9000"
+            - name: MSM_NODE_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: spec.nodeName
+            - name: MSM_POD_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+            - name: MSM_POD_NAMESPACE
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.namespace
       nodeSelector:
         node-role.kubernetes.io/control-plane: ""
