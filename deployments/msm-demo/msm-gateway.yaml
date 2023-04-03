@@ -17,7 +17,7 @@ spec:
       hostNetwork: true
       containers:
         - name: msm-proxy
-          image: dockerhub.cisco.com/docker.io/ciscolabs/msm-proxy:20230123
+          image: dockerhub.cisco.com/docker.io/ciscolabs/msm-proxy:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: rtp
@@ -33,7 +33,7 @@ spec:
             - name: LOG_LVL
               value: "DEBUG"
         - name: msm-rtsp-stub
-          image: dockerhub.cisco.com/docker.io/ciscolabs/msm-rtsp-stub:20230215e
+          image: dockerhub.cisco.com/docker.io/ciscolabs/msm-rtsp-stub:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: rtsp
@@ -46,3 +46,17 @@ spec:
               value: "8000"
             - name: MSM_CONTROL_PLANE
               value: "http://10.96.3.1:9000"
+            - name: MSM_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MSM_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MSM_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+
+
