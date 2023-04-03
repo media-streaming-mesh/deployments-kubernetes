@@ -38,7 +38,7 @@ spec:
       serviceAccount: msm-admission-webhook-sa
       containers:
         - name: msm-admission-webhook
-          image: ciscolabs/msm-admission-webhook:latest
+          image: ciscolabs/msm-admission-webhook:20230324
           imagePullPolicy: IfNotPresent
           env:
             - name: REPO
@@ -55,17 +55,17 @@ spec:
               value: "DEBUG"
             - name: MSM_CONTROL_PLANE
               value: "http://10.96.3.1:9000"
-            - name: MSM_NODE_NAME
-                valueFrom:
-                  fieldRef:
-                    fieldPath: spec.nodeName
-            - name: MSM_POD_NAME
-                valueFrom:
-                  fieldRef:
-                    fieldPath: metadata.name
-            - name: MSM_POD_NAMESPACE
-                valueFrom:
-                  fieldRef:
-                    fieldPath: metadata.namespace
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
       nodeSelector:
         node-role.kubernetes.io/control-plane: ""
