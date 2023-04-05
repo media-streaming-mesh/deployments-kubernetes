@@ -6,7 +6,7 @@ metadata:
   labels:
     app: msm-admission-webhook
 spec:
-  clusterIP: 10.96.4.1
+  type: ClusterIP
   ports:
     - port: 443
       targetPort: 443
@@ -21,7 +21,7 @@ metadata:
   labels:
     msm: controller
 spec:
-  clusterIP: 10.96.3.1
+  type: ClusterIP
   ports:
     - name: grpc
       port: 9000
